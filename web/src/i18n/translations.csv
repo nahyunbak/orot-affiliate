@@ -116,7 +116,7 @@ orot.copy008,"요청을 처리하지 못했습니다.","요청을 처리하지 �
 orot.copy009,"지갑 주소를 복사했습니다.","지갑 주소를 복사했습니다."
 orot.copy010,"표시된 주소를 직접 복사해 주세요.","표시된 주소를 직접 복사해 주세요."
 orot.copy011,"콘텐츠 피드로 이동","콘텐츠 피드로 이동"
-orot.copy012,"콘텐츠가 보상이 되는 곳","콘텐츠가 보상이 되는 곳"
+orot.copy012,"브랜드와 인플루언서를 잇다","Connecting brands and influencers"
 orot.copy013,"주 메뉴","주 메뉴"
 orot.copy014,"캠페인 피드","캠페인 피드"
 orot.copy015,"집행 기준","집행 기준"
@@ -240,3 +240,4 @@ orot.status.paid,지급 완료,지급 완료
 orot.status.rejected,반려,반려
 orot.status.failed,거래 실패,거래 실패
 orot.transaction.retry,기록된 거래 다시 확인,Check saved transaction
+brand.home,"Inchain 인체인 홈","Inchain home"

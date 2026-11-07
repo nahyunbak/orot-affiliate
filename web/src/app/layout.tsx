@@ -4,8 +4,9 @@ import "./globals.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "오롯 — 크리에이터의 콘텐츠가 보상으로",
-  description: "인스타그램 캠페인 피드 검수와 Maroo 테스트넷 보상 지급",
+  title: "Inchain (인체인) — 브랜드와 인플루언서를 잇다",
+  description:
+    "브랜드와 인플루언서를 연결하는 Inchain. 인스타그램 캠페인 피드 검수부터 Maroo 테스트넷 보상 지급까지.",
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {

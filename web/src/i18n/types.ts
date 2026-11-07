@@ -242,4 +242,5 @@ export type TranslationKey =
   | 'orot.status.paid'
   | 'orot.status.rejected'
   | 'orot.status.failed'
-  | 'orot.transaction.retry';
+  | 'orot.transaction.retry'
+  | 'brand.home';
