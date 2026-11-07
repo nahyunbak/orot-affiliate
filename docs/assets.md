@@ -12,3 +12,9 @@ Morning: Use case: photorealistic-natural. Asset type: square lifestyle coffee p
 Iced: Photorealistic-natural editorial square Instagram coffee creator photograph for a fictional demo campaign. Overhead shot of a tall clear glass iced latte with swirling milk and ice on a dark walnut cafe table. An open unmarked cream notebook, simple silver pen and folded oatmeal linen sit beside it. A person's hand with a neutral knit sleeve lightly holds the glass, no face shown. Refined candid Korean cafe photography, soft side window daylight, true-to-life brown and cream palette, subtle analog texture. Different angle and scene from a latte art mug. Fill the square photograph with interesting natural details. No text, brand marks, logos, watermark or UI.
 
 웹 전송용 파일은 생성 원본과 동일한 구도를 유지한 JPEG 변환본입니다. 원본 PNG는 Codex 생성 이미지 보관 위치에 그대로 유지했습니다.
+
+## 마루 해커톤 캠페인
+
+- 현재 캠페인은 `web/public/images/maroo/`의 프로필 5장, 인물별 피드 5장과 공식 심볼 `logo.png`를 사용한다. 각 파일은 참여 ID `maroo-s1`~`maroo-s5`로 직접 연결해 두 사진을 돌려쓰던 분기를 제거했다.
+- 공식 심볼 출처: [Maroo](https://www.maroo.io/ko), [원본 PNG](https://www.maroo.io/maroo-symbol.png). 원본을 그대로 보관하며 피드 속 행사물에는 이를 참조해 이미지 생성 도구로 반영했다.
+- 생성 도구·전체 프롬프트·가상 인물 안내: [이미지 제작 기록](maroo-image-prompts.md). 이전 커피 이미지는 과거 캠페인 자료로 보존한다.

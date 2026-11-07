@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Participant } from "./types";
 const paths = {
   home: "M3 10 12 3l9 7v11h-6v-7H9v7H3z",
@@ -41,9 +42,16 @@ export function Avatar({
       className={`avatar-wrap [display:inline-flex] [border-radius:50%] [padding:3px] [flex-shrink:0] ${ring ? "ring [background:linear-gradient(35deg,_var(--color-feed-tone-28),_var(--color-feed-tone-29),_var(--color-feed-tone-30))] [padding:2px] [&_.avatar]:[width:57px] [&_.avatar]:[height:57px] [&_.avatar]:[border:3px_solid_white] [&_.avatar]:[font-size:var(--text-feed-19)] max-[1250px]:[&_.avatar]:[width:51px] max-[1250px]:[&_.avatar]:[height:51px] max-[1050px]:[&_.avatar]:[width:57px] max-[1050px]:[&_.avatar]:[height:57px] max-[600px]:[&_.avatar]:[width:50px] max-[600px]:[&_.avatar]:[height:50px] max-[600px]:[&_.avatar]:[font-size:var(--text-feed-17)]" : ""}`}
     >
       <span
-        className={`avatar [display:grid] [place-items:center] [width:35px] [height:35px] [border-radius:50%] [background:var(--color-feed-tone-18)] [color:var(--color-feed-tone-19)] [font-size:var(--text-feed-12)] [font-weight:650] [border:2px_solid_white] [&.avatar-s2]:[background:var(--color-feed-tone-20)] [&.avatar-s2]:[color:var(--color-feed-tone-21)] [&.avatar-s3]:[background:var(--color-feed-tone-22)] [&.avatar-s3]:[color:var(--color-feed-tone-23)] [&.avatar-s4]:[background:var(--color-feed-tone-24)] [&.avatar-s4]:[color:var(--color-feed-tone-25)] [&.avatar-s5]:[background:var(--color-feed-tone-26)] [&.avatar-s5]:[color:var(--color-feed-tone-27)] avatar-${post.id}`}
+        className={`avatar [display:grid] [place-items:center] [width:35px] [height:35px] [border-radius:50%] [overflow:hidden] [background:var(--color-feed-tone-18)] [color:var(--color-feed-tone-19)] [font-size:var(--text-feed-12)] [font-weight:650] [border:2px_solid_white] [&.avatar-s2]:[background:var(--color-feed-tone-20)] [&.avatar-s2]:[color:var(--color-feed-tone-21)] [&.avatar-s3]:[background:var(--color-feed-tone-22)] [&.avatar-s3]:[color:var(--color-feed-tone-23)] [&.avatar-s4]:[background:var(--color-feed-tone-24)] [&.avatar-s4]:[color:var(--color-feed-tone-25)] [&.avatar-s5]:[background:var(--color-feed-tone-26)] [&.avatar-s5]:[color:var(--color-feed-tone-27)] avatar-${post.id}`}
       >
-        {post.name.slice(0, 1)}
+        <Image
+          src={`/images/maroo/${post.id}-profile.jpg`}
+          alt=""
+          width={64}
+          height={64}
+          className="h-full w-full object-cover"
+          unoptimized
+        />
       </span>
     </span>
   );

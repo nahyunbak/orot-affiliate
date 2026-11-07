@@ -52,6 +52,11 @@ async function run() {
   );
   checks.push('normal user cannot execute operator APIs');
   const before = await get();
+  assert.equal(before.campaign.id, 'maroo-hackathon-november');
+  assert.deepEqual(
+    before.participants.map((p) => p.id),
+    ['maroo-s1', 'maroo-s2', 'maroo-s3', 'maroo-s4', 'maroo-s5'],
+  );
   assert.equal(before.participants.length, 5);
   assert.equal(
     new Set(before.participants.map((p) => p.address.toLowerCase())).size,
@@ -62,30 +67,35 @@ async function run() {
       !JSON.stringify(before).includes('privateKey'),
   );
   checks.push('five real server wallets returned without keys');
-  for (const id of ['s2', 's3', 's4'])
+  for (const id of ['maroo-s2', 'maroo-s3', 'maroo-s4'])
     assert.equal((await post(id + '/approve', { verified: true })).status, 400);
   checks.push('keyword, engagement and period failures rejected server-side');
-  assert.equal((await post('s1/approve', { verified: false })).status, 400);
+  assert.equal(
+    (await post('maroo-s1/approve', { verified: false })).status,
+    400,
+  );
   checks.push('human verification required');
-  const receiver = before.participants.find((p) => p.id === 's5');
+  const receiver = before.participants.find((p) => p.id === 'maroo-s5');
   const provider = new JsonRpcProvider(process.env.MAROO_RPC_URL, undefined, {
     batchMaxCount: 1,
   });
   try {
     if (receiver.status === 'pending') {
-      const approved = await post('s5/approve', { verified: true });
+      const approved = await post('maroo-s5/approve', { verified: true });
       assert.equal(approved.status, 201);
-      const state = approved.body.data.participants.find((p) => p.id === 's5');
+      const state = approved.body.data.participants.find(
+        (p) => p.id === 'maroo-s5',
+      );
       assert.equal(state.status, 'approved');
       checks.push('real approval transaction confirmed');
     }
     let latest = await get();
-    let recipient = latest.participants.find((p) => p.id === 's5');
+    let recipient = latest.participants.find((p) => p.id === 'maroo-s5');
     if (recipient.status !== 'paid') {
       const balanceBefore = await provider.getBalance(recipient.address);
-      const paid = await post('s5/pay');
+      const paid = await post('maroo-s5/pay');
       assert.equal(paid.status, 201);
-      recipient = paid.body.data.participants.find((p) => p.id === 's5');
+      recipient = paid.body.data.participants.find((p) => p.id === 'maroo-s5');
       assert.equal(recipient.status, 'paid');
       const receipt = await provider.getTransactionReceipt(recipient.payoutTx);
       assert.equal(receipt.status, 1);
@@ -99,11 +109,12 @@ async function run() {
       );
       checks.push('real payout receipt and recipient balance verified');
     }
-    assert.equal((await post('s5/pay')).status, 400);
+    assert.equal((await post('maroo-s5/pay')).status, 400);
     checks.push('duplicate payment rejected');
     const final = await get();
-    recipient = final.participants.find((p) => p.id === 's5');
+    recipient = final.participants.find((p) => p.id === 'maroo-s5');
     const report = {
+      campaignId: final.campaign.id,
       checkedAt: new Date().toISOString(),
       checks,
       chainId: 450815,
@@ -116,7 +127,7 @@ async function run() {
     };
     fs.mkdirSync('../artifacts/qa', { recursive: true });
     fs.writeFileSync(
-      '../artifacts/qa/testnet-verification.json',
+      `../artifacts/qa/${final.campaign.id}-testnet-verification.json`,
       JSON.stringify(report, null, 2),
     );
     console.log(JSON.stringify(report, null, 2));

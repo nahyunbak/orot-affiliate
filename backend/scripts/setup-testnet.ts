@@ -14,19 +14,23 @@ import {
 } from 'ethers';
 import { seal, unseal } from '../src/affiliate/vault';
 import { createProvider, PCL_ADDRESS } from '../src/affiliate/chain';
-import { CampaignSettings, PostEvidence } from '../src/affiliate/types';
+import {
+  ACTIVE_CAMPAIGN_ID,
+  CampaignSettings,
+  PostEvidence,
+} from '../src/affiliate/types';
 
-const prisma = new PrismaClient();
-const provider = createProvider();
-const fixture = JSON.parse(readFileSync('fixtures/campaign.json', 'utf8')) as {
+const fixture = JSON.parse(
+  readFileSync(`${__dirname}/../fixtures/campaign.json`, 'utf8'),
+) as {
   settings: CampaignSettings;
-  posts: (PostEvidence & { id: string })[];
+  posts: (PostEvidence & { id: string; walletId: string })[];
 };
-const campaignId = 'dave-november';
-async function seed() {
+const campaignId = ACTIVE_CAMPAIGN_ID;
+export async function seed(prisma: PrismaClient) {
   const people = [
-    { id: 'operator', name: '데이브 캠페인 집행자' },
-    ...fixture.posts.map((p) => ({ id: p.id, name: p.name })),
+    { id: 'operator', name: '마루 캠페인 집행자' },
+    ...fixture.posts.map((p) => ({ id: p.walletId, name: p.name })),
   ];
   for (const person of people) {
     if (await prisma.testWallet.findUnique({ where: { id: person.id } }))
@@ -65,13 +69,13 @@ async function seed() {
     create: { id: campaignId, settings: fixture.settings as never },
     update: {},
   });
-  for (const { id, ...evidence } of fixture.posts) {
+  for (const { id, walletId, ...evidence } of fixture.posts) {
     await prisma.campaignParticipant.upsert({
       where: { id },
       create: {
         id,
         campaignId,
-        walletId: id,
+        walletId,
         evidence: evidence as never,
         status: 'pending',
       },
@@ -87,20 +91,33 @@ async function seed() {
     }),
   );
 }
-async function setup() {
-  await seed();
+async function setup(
+  prisma: PrismaClient,
+  provider: ReturnType<typeof createProvider>,
+) {
+  await seed(prisma);
   if (process.argv.includes('--seed-only')) return;
   if ((await provider.getNetwork()).chainId !== 450815n)
     throw new Error('Wrong chain');
   const stored = await prisma.testWallet.findUniqueOrThrow({
     where: { id: 'operator' },
   });
+  let campaign = await prisma.affiliateCampaign.findUniqueOrThrow({
+    where: { id: campaignId },
+  });
   const signer = new Wallet(unseal(stored.encryptedKey), provider);
   const balance = await provider.getBalance(signer.address);
   console.log(
     JSON.stringify({ operator: signer.address, balance: formatEther(balance) }),
   );
-  if (balance < parseEther('100')) {
+  const requiredBalance = parseEther(
+    String(
+      campaign.fundingTx
+        ? 100
+        : fixture.settings.reward * fixture.posts.length + 100,
+    ),
+  );
+  if (balance < requiredBalance) {
     const response = await fetch(
       'https://faucet.maroo.io/api/agent/sendToken',
       {
@@ -124,9 +141,6 @@ async function setup() {
     console.log(JSON.stringify({ faucetTx: data.txHash }));
     await provider.waitForTransaction(data.txHash, 1, 60000);
   }
-  let campaign = await prisma.affiliateCampaign.findUniqueOrThrow({
-    where: { id: campaignId },
-  });
   const settings = campaign.settings as unknown as CampaignSettings;
   const artifact = JSON.parse(
     readFileSync('chain-artifacts/escrow.json', 'utf8'),
@@ -244,9 +258,10 @@ async function setup() {
   }
   mkdirSync('.data', { recursive: true });
   writeFileSync(
-    '.data/testnet-evidence.json',
+    `.data/${campaignId}-testnet-evidence.json`,
     JSON.stringify(
       {
+        campaignId,
         chainId: 450815,
         operator: signer.address,
         contract: campaign.contractAddress,
@@ -262,14 +277,18 @@ async function setup() {
     'Test wallets saved on server; PCL escrow funded. Private keys were not printed.',
   );
 }
-setup()
-  .catch(() => {
-    console.error(
-      'Testnet setup did not complete. Inspect public chain/DB state before retrying; credentials are not logged.',
-    );
-    process.exitCode = 1;
-  })
-  .finally(async () => {
-    provider.destroy();
-    await prisma.$disconnect();
-  });
+if (require.main === module) {
+  const prisma = new PrismaClient();
+  const provider = createProvider();
+  setup(prisma, provider)
+    .catch(() => {
+      console.error(
+        'Testnet setup did not complete. Inspect public chain/DB state before retrying; credentials are not logged.',
+      );
+      process.exitCode = 1;
+    })
+    .finally(async () => {
+      provider.destroy();
+      await prisma.$disconnect();
+    });
+}

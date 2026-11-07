@@ -7,7 +7,12 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { Interface, formatEther, sha256, toUtf8Bytes } from 'ethers';
 import { ChainGateway, ESCROW_ABI, EXPLORER } from './chain';
-import { CampaignSettings, PostEvidence, checkEvidence } from './types';
+import {
+  ACTIVE_CAMPAIGN_ID,
+  CampaignSettings,
+  PostEvidence,
+  checkEvidence,
+} from './types';
 
 @Injectable()
 export class AffiliateService implements OnModuleDestroy {
@@ -23,7 +28,7 @@ export class AffiliateService implements OnModuleDestroy {
   }
   private async campaign() {
     return this.prisma.affiliateCampaign.findUniqueOrThrow({
-      where: { id: 'dave-november' },
+      where: { id: ACTIVE_CAMPAIGN_ID },
     });
   }
   async workspace() {
@@ -110,8 +115,10 @@ export class AffiliateService implements OnModuleDestroy {
         .getTransactionReceipt(op.txHash)
         .catch(() => null);
       if (!receipt) continue;
-      const settings = (await this.campaign())
-        .settings as unknown as CampaignSettings;
+      const campaign = await this.prisma.affiliateCampaign.findUniqueOrThrow({
+        where: { id: row.campaignId },
+      });
+      const settings = campaign.settings as unknown as CampaignSettings;
       await this.prisma.campaignParticipant.update({
         where: { id: row.id },
         data:
@@ -171,7 +178,7 @@ export class AffiliateService implements OnModuleDestroy {
       );
     if (row.status === expected) {
       const lock = await this.prisma.campaignParticipant.updateMany({
-        where: { id, status: expected },
+        where: { id, campaignId: campaign.id, status: expected },
         data: { status: pending, reason: null },
       });
       if (lock.count !== 1)
@@ -234,7 +241,7 @@ export class AffiliateService implements OnModuleDestroy {
     if (!reason.trim())
       throw new BadRequestException('반려 사유를 입력하세요.');
     const result = await this.prisma.campaignParticipant.updateMany({
-      where: { id, status: 'pending' },
+      where: { id, campaignId: ACTIVE_CAMPAIGN_ID, status: 'pending' },
       data: { status: 'rejected', reason: reason.trim() },
     });
     if (result.count !== 1)
@@ -243,7 +250,7 @@ export class AffiliateService implements OnModuleDestroy {
   }
   async reopen(id: string) {
     const result = await this.prisma.campaignParticipant.updateMany({
-      where: { id, status: 'rejected' },
+      where: { id, campaignId: ACTIVE_CAMPAIGN_ID, status: 'rejected' },
       data: { status: 'pending', reason: null },
     });
     if (result.count !== 1)

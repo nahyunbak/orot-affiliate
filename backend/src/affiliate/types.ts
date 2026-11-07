@@ -1,3 +1,5 @@
+export const ACTIVE_CAMPAIGN_ID = 'maroo-hackathon-november';
+
 export interface CampaignSettings {
   title: string;
   start: string;

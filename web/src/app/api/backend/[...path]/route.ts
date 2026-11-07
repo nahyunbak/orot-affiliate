@@ -13,7 +13,7 @@ async function forward(request: NextRequest, context: Context) {
   const path = (await context.params).path.join("/");
   const affiliateAction =
     request.method === "POST" &&
-    /^affiliate\/s[1-5]\/(approve|pay|reject|reopen)$/.test(path);
+    /^affiliate\/maroo-s[1-5]\/(approve|pay|reject|reopen)$/.test(path);
   if (!routes.has(`${request.method} ${path}`) && !affiliateAction)
     return json({ message: "error.request" }, 404);
   if (request.method !== "GET" && !sameOrigin(request))

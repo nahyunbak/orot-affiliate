@@ -15,7 +15,7 @@ import { ReviewPanel } from "./ReviewPanel";
 type Modal = "wallets" | "rules" | "reject" | "pay" | "evidence" | null;
 export function CampaignFeed() {
   const actionMutation = useAffiliateAction();
-  const [selected, setSelected] = useState("s1"),
+  const [selected, setSelected] = useState("maroo-s1"),
     [filter, setFilter] = useState("all"),
     [search, setSearch] = useState(""),
     [verified, setVerified] = useState(false),
@@ -165,9 +165,14 @@ export function CampaignFeed() {
             Maroo Testnet
           </div>
           <div className="operator-profile [display:flex] [gap:11px] [padding:19px_9px_0] [border-top:1px_solid_var(--color-feed-tone-1)] [align-items:center] [&_strong]:[font-size:var(--text-feed-12)] [&_strong]:[display:block] [&_small]:[font-size:var(--text-feed-10)] [&_small]:[color:var(--color-feed-tone-13)] [&_small]:[display:block] [&_small]:[margin-top:2px]">
-            <span className="operator-avatar [display:grid] [place-items:center] [background:var(--color-feed-tone-11)] [color:var(--color-feed-tone-12)] [width:36px] [height:36px] [border-radius:50%] [font-family:Georgia,_serif] [font-size:var(--text-feed-21)]">
-              D
-            </span>
+            <Image
+              src="/images/maroo/logo.png"
+              alt="Maroo"
+              width={36}
+              height={36}
+              className="shrink-0"
+              unoptimized
+            />
             <div>
               <strong>{t("orot.copy017")}</strong>
               <small>{t("orot.copy018")}</small>
@@ -357,11 +362,7 @@ export function CampaignFeed() {
                       aria-label={t("orot.copy039", { value0: p.name })}
                     >
                       <Image
-                        src={
-                          ["s2", "s4"].includes(p.id)
-                            ? "/images/coffee-iced.jpg"
-                            : "/images/coffee-morning.jpg"
-                        }
+                        src={`/images/maroo/${p.id}-feed.jpg`}
                         alt={t("orot.copy040", { value0: p.name })}
                         width={1254}
                         height={1254}
