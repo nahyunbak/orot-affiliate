@@ -357,8 +357,8 @@ export function CampaignFeed() {
                       <Image
                         src={
                           ["s2", "s4"].includes(p.id)
-                            ? "/images/coffee-iced.png"
-                            : "/images/coffee-morning.png"
+                            ? "/images/coffee-iced.jpg"
+                            : "/images/coffee-morning.jpg"
                         }
                         alt={t("orot.copy040", { value0: p.name })}
                         width={1254}

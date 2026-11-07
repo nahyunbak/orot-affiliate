@@ -5,8 +5,9 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   allowedDevOrigins: ["127.0.0.1"],
+  outputFileTracingRoot: path.resolve(process.cwd(), ".."),
   turbopack: {
-    root: path.resolve(process.cwd()),
+    root: path.resolve(process.cwd(), ".."),
   },
 };
 

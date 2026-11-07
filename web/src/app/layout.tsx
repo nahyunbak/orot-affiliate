@@ -12,7 +12,6 @@ export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="ko">
       <body>
-        <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async />
         <Providers>{children}</Providers>
       </body>
     </html>

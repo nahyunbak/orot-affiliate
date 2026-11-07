@@ -20,3 +20,7 @@ backend/.data/
 /workhistory/**/*.png
 
 .vercel/
+.vercel
+
+__pycache__/
+*.pyc

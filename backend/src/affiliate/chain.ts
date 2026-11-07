@@ -43,6 +43,7 @@ export class ChainGateway {
     const work = this.queue
       .catch(() => undefined)
       .then(async () => {
+        const signer = await this.signer();
         const operation = await this.prisma.$transaction(
           async (database) => {
             // Vercel의 서로 다른 인스턴스도 같은 집행자 nonce를 중복 배정하지 못하게 한다.
@@ -53,7 +54,6 @@ export class ChainGateway {
               where: { operationKey },
             });
             if (existing) return existing;
-            const signer = await this.signer();
             const previous = await database.chainOperation.findFirst({
               orderBy: { createdAt: 'desc' },
             });

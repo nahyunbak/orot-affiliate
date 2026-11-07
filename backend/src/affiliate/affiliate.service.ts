@@ -38,6 +38,12 @@ export class AffiliateService implements OnModuleDestroy {
       where: { id: 'operator' },
       select: { address: true },
     });
+    const [limits] = await this.prisma.$queryRaw<
+      { roleLimit: number; databaseLimit: number }[]
+    >`
+      SELECT (SELECT rolconnlimit FROM pg_roles WHERE rolname=current_user)::int AS "roleLimit",
+      (SELECT datconnlimit FROM pg_database WHERE datname=current_database())::int AS "databaseLimit"
+    `;
     let balance: string | null = null,
       contractBalance: string | null = null,
       blockNumber: number | null = null;
@@ -63,6 +69,12 @@ export class AffiliateService implements OnModuleDestroy {
         fundingTx: campaign.fundingTx,
       },
       operator: { address: operator.address, balance },
+      database: {
+        connectionPoolLimit: Number(
+          this.config.get('DATABASE_CONNECTION_LIMIT') || 2,
+        ),
+        ...limits,
+      },
       chain: {
         chainId: 450815,
         blockNumber,
