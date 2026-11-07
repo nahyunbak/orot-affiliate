@@ -1,11 +1,31 @@
 {
-  "name": "orot-affiliate-settlement",
+  "name": "orot-affiliate",
+  "version": "1.0.0",
   "private": true,
-  "type": "module",
+  "packageManager": "pnpm@10.13.1",
   "scripts": {
-    "start": "node scripts/server.mjs",
-    "test": "node --test tests/*.test.mjs",
-    "lint": "node scripts/check.mjs",
-    "test:contracts": "forge test -vv"
+    "dev:backend": "pnpm --dir backend dev",
+    "build:backend": "pnpm --dir backend build",
+    "generate-api": "node scripts/generate-api.js",
+    "generate-jwt": "node generate-jwt.js",
+    "generate-i18n": "node scripts/generate-i18n.js",
+    "test:client-backup": "pnpm --dir packages/client-backup test",
+    "typecheck:client-backup": "pnpm --dir packages/client-backup typecheck",
+    "dev:web": "pnpm --dir web exec next dev --turbopack --port 4173",
+    "build:web": "pnpm --dir web build",
+    "typecheck:web": "pnpm --dir web typecheck",
+    "test": "pnpm --dir backend test:affiliate",
+    "lint": "pnpm --dir web lint",
+    "typecheck": "pnpm --dir web typecheck && pnpm --dir backend exec tsc --noEmit",
+    "start": "pnpm --dir web exec next dev --turbopack --port 4173"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "ts-node": "^10.9.2",
+    "@types/node": "^24.10.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "jsonwebtoken": "^9.0.2"
   }
 }

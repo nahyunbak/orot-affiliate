@@ -1,76 +1,86 @@
-# 오롯 — 인스타그램 캠페인 검수·정산
+# 오롯 — Instagram 피드 검수와 Maroo 테스트넷 정산
 
-집행기간, 필수 키워드, 인게이지 조건을 모두 충족한 참여자를 집행자가 검수하고 승인·지급하는 PC 중심 반응형 웹앱입니다. 설치할 npm 의존성은 없습니다. 현재 제공물은 동작하는 로컬 데모, EVM 지갑 연동 코드, 테스트한 정산 컨트랙트입니다. **Maroo 테스트넷에 배포했거나 PCL을 실제 적용한 상태는 아닙니다.**
+인스타그램처럼 게시물을 보면서 집행기간·필수 키워드·인게이지 조건을 검수하고, 승인한 크리에이터의 실제 테스트 지갑으로 보상을 지급하는 해커톤 웹앱입니다.
+
+**게시물·사진·성과 수치는 목업이고, 사용자 계정·지갑·서버 저장·PCL 정책·승인·지급은 실제입니다.** 실제 인스타그램 계정이나 Instagram API를 만들거나 연결하지 않았습니다.
+
+## 기반과 구성
+
+`nahyunbak/full-template` 공식 main의 `5ed47edd63c6f21ff55592ad204f0a65f48b8532`에서 `--targets web --data nest`로 생성했습니다. 기존 공통 버튼, 인증, RBAC, 서버 프록시, TanStack Query, Zustand, T3 env, 번역 생성 구조를 사용합니다. 추가 SDK `ethers`는 사용자 승인 후 설치했습니다.
+
+- `web/`: Next.js App Router, React, Tailwind. PC는 피드+검수 패널, 모바일은 피드+검수 바텀시트.
+- `backend/`: NestJS, Prisma, PostgreSQL. 실제 테스트 사용자와 AES-256-GCM 암호화 지갑 보관.
+- `contracts/`: 캠페인 예산 예약·승인·중복 지급 차단을 담당하는 Solidity 컨트랙트.
+- `backend/fixtures/`: Instagram API 대신 사용하는 명시적인 데모 증빙.
+- `backend/chain-artifacts/`: 검증한 컨트랙트 ABI·bytecode, 공식 Maroo contracts 0.1.0의 PCL ABI 부분집합(MIT).
+- `backend/src/affiliate/`: 승인·반려·재검수·지급 API 및 실제 테스트넷 서명.
+- `web/src/query/affiliate-custom.ts`: 65초 거래 응답 대기·인증 갱신·주기 조회를 위한 custom 전송/쿼리 경계. UI에서 직접 API를 호출하지 않습니다.
+
+이전 정적 HTML·데모 지갑 코드와 중복 검증 코드는 제거했습니다. 현재 앱은 서버 연결 실패를 가짜 성공이나 데모 지급으로 대체하지 않습니다.
 
 ## 실행
 
-Node.js 20.19 이상에서:
+Node.js 20.19+, pnpm 10.13.1, PostgreSQL이 필요합니다.
 
 ```sh
-npm start
+pnpm install
+pnpm --dir backend install
+pnpm --dir packages/client-backup install
+pnpm --dir web install
+cp backend/.env.example backend/.env
+cp web/.env.example web/.env.local
 ```
 
-브라우저에서 <http://127.0.0.1:4173>을 엽니다. 다른 포트는 `PORT=4174 npm start`로 지정합니다.
+로컬 설정 파일에 자신의 **개발용 DB**와 독립적인 JWT 비밀 값, 32바이트 hex 형식 지갑 암호화 키를 설정합니다. 이번 작업에서 만든 로컬 설정과 키는 `.env`·`.secrets`에만 있으며 Git에 포함되지 않습니다.
 
-## 제공 기능
+```sh
+pnpm --dir backend exec prisma generate
+pnpm --dir backend exec prisma migrate deploy
+pnpm --dir backend setup:testnet
+pnpm dev:backend
+# 별도 터미널
+pnpm start
+```
 
-- 캠페인 이름, 기간, 키워드, 좋아요·댓글·조회수 하한, 1인 지급액 설정.
-- 공개 인스타그램 URL, 게시 시각, 캡션, 성과 수치, 수신 지갑을 수동 등록.
-- 세 조건을 AND로 검사. 해시태그는 전체 토큰 일치, 일반 키워드는 본문 포함 여부로 판단.
-- 게시 시각과 승인·지급 시각 모두 집행기간 안이어야 함. 기간은 KST 시작일 00:00:00부터 종료일 23:59:59까지.
-- 집행자가 원본 확인 체크를 해야 승인 가능. 반려 사유 저장과 재검수 지원.
-- 승인 후 지급 확인, 동일 지갑 중복 등록 차단, 중복 지급 차단, 검색·필터.
-- 데모는 2026-11-07 14:20 KST의 가상 데이터. localStorage에만 저장하며 실제 거래 해시를 만들지 않음.
-- 실제 모드는 지갑의 계정·네트워크·컨트랙트의 기준 해시와 설정을 비교하고 샘플 참여자를 비움.
-- 실제 거래에서는 서명 전 gas estimate, 거래 해시 표시, 성공 영수증 확인 후 상태 변경.
+웹: <http://127.0.0.1:4173>, 백엔드: <http://127.0.0.1:4010>. 현재 로컬 PostgreSQL은 기존 DB와 분리된 55432 포트의 새 클러스터입니다. DB 파일·비밀 파일은 `backend/.data`·`backend/.secrets`에 저장하고 Git에서 제외합니다. 외부 서버로의 배포 대상은 아직 지정되지 않았습니다.
 
-## 판단 주체와 신뢰 범위
+`setup:testnet`은 기존 계정/지갑을 재사용하고, 필요한 경우 공식 faucet에서 집행자 자금을 받은 뒤 PCL 프록시 배포·정책 연결·예산 예치를 수행합니다. faucet 오류 때는 잔액을 먼저 확인하며 무조건 반복 호출하지 않습니다. 실제 마루 테스트넷에 쓰는 명령입니다.
 
-인스타그램 자료는 자동으로 인증하지 않습니다. 키워드 문자열과 숫자 기준은 앱이 비교하지만, 캡션·게시 시각·좋아요·댓글·조회수가 실제인지 집행자가 확인합니다. 컨트랙트 역시 집행자가 제출한 수치와 키워드 확인 결과를 신뢰합니다. 악의적인 집행자의 허위 심사를 방지한다고 주장하지 않습니다.
+## 테스트넷에서 확인된 결과
 
-블록체인에는 규칙의 SHA-256 해시, 증빙의 SHA-256 해시, 수신 주소, 승인·지급 상태를 기록합니다. 본문, 계정명, 게시물 URL은 컨트랙트에 저장하지 않습니다. 이는 비공개 송금을 의미하지 않으며 일반 지급 주소와 금액은 공개됩니다.
+- 체인 ID: **450815**
+- 실제 사용자: 집행자 1명 + 인플루언서 5명.
+- [정산 프록시](https://explorer-testnet.maroo.io/address/0xfbd8b82f610c3a1161FeEa5faEa33C086CD2eAd1)
+- [PCL 건당 지급 한도 설정](https://explorer-testnet.maroo.io/tx/0x2036a0e95930bbaaec6ac9bee4bd0f36f535bdb869f771afcd4cff22d23c3614)
+- [2,500 tOKRW 예치](https://explorer-testnet.maroo.io/tx/0xde0da395b36b452291cbcadd24dc511590424eac737d7648f3a533f03a278cc4)
+- [하린 승인 거래](https://explorer-testnet.maroo.io/tx/0xe3d4ff55f23f37d130309de094b58237ef30c2c9f4bb4ae91f8f92896685caee)
+- [하린에게 500 tOKRW 지급](https://explorer-testnet.maroo.io/tx/0xa5878f221d25bad066dc11fea7bbac29552c25825f40d79e16d2a4c2bb7c0b6d)
 
-## Maroo 연결과 남은 배포 작업
-
-1. `contracts/CampaignEscrow.sol` 구현체를 배포합니다. 구현체는 직접 초기화할 수 없도록 잠겨 있습니다.
-2. Maroo의 `deployPclProxy`로 등록된 프록시를 생성하며 `initialize`를 호출합니다. 아래 필드는 화면 설정과 일치해야 합니다: 집행자 주소, 규칙 해시, 시작·종료 Unix 초, 보상액(18 decimals), 최소 좋아요·댓글·조회수.
-3. 자금은 **프록시 주소에** 예치합니다. 승인 시 예산이 예약되고 지급 시 소비됩니다. 정책은 프록시를 경유할 때만 적용됩니다.
-4. 프록시 정책 관리자가 `changeContractPolicies`로 실제 지원되는 금액 정책 등을 연결합니다. 프론트엔드 자체의 조건 검사를 PCL 적용으로 간주하지 마세요. 현재 코드의 연결 검증은 캠페인·집행자 설정을 검사하며 **PCL 등록·정책 적용 여부까지 인증하지 않습니다**.
-5. 헤더의 ‘마루 연결’에서 프록시 주소를 입력하고 지갑을 연결합니다. 개인키는 앱에 넣지 않습니다.
-6. 실제 참여자 증빙을 등록하고 승인 → 지급을 실행합니다. 성공 거래 해시와 별도 PCL 거절 증거를 확보해야 행사 데모 요건을 충족합니다.
-
-규칙 해시는 `src/domain.js`의 `rulesHash`가 정의합니다. JSON 배열 순서는 `[title,start,end,keywords,likes,comments,views,reward]`입니다. Unicode 정규화 없이 저장된 원문을 SHA-256 처리합니다. 증빙 해시는 `[url,postedAt,caption,likes,comments,views,wallet.toLowerCase()]` 순서입니다.
-
-실제 모드에서는 캠페인 기준이 고정됩니다. 새로고침 후 재연결하고 같은 증빙을 등록하면 컨트랙트의 승인·지급 상태를 조회합니다. 조회 중인 거래가 시간 초과되면 Explorer에서 먼저 확인해야 하며, 컨트랙트가 중복 지급을 막습니다.
-
-기간 종료 후 미지급 승인은 만료되고 집행자가 남은 예산을 회수할 수 있습니다. 따라서 ‘승인 이후 기간 제한 없이 지급을 보장한다’고 설명해서는 안 됩니다. 자동 지급, 크리에이터 직접 수령, 데이터베이스, 운영용 인증, Instagram API 연동은 이번 구현에 포함하지 않았습니다.
-
-공식 참고:
-
-- [빌더 자료](https://maroo-builder-resources.vercel.app/)
-- [PCL](https://docs.maroo.io/en/concepts/compliance)
-- [프록시 배포 및 정책 연결](https://docs.maroo.io/guides/integration/tutorial-building-compliant-token)
-- [서명 전 검사](https://docs.maroo.io/guides/integration/simulating-pcl-checks)
+지급 영수증 status=1과 수신 지갑 잔액의 500 tOKRW 증가를 각각 조회해 확인했습니다. tOKRW는 실제 원화 가치가 없는 테스트 토큰입니다.
 
 ## 검증
 
 ```sh
-npm test
-npm run lint
-tsc -p tsconfig.json
-forge test -vv
+pnpm test                         # 조건, 암호화, 중단된 거래 복구
+pnpm typecheck                    # 웹 및 백엔드
+pnpm lint                         # 웹 ESLint
+pnpm --dir backend exec eslint src/affiliate src/app.module.ts
+pnpm --dir backend build
+pnpm --dir web build
+forge test -vv                    # Solidity 단위 테스트
+pnpm --dir backend verify:testnet # 실제 API·테스트넷 통합 검증
 ```
 
-TypeScript는 기존 설치를 사용하며 새 의존성으로 추가하지 않았습니다. `tsconfig.json`은 핵심 지급 조건·지갑 모듈을 검사합니다. DOM 화면 코드는 구문 검사와 브라우저 QA로 검증합니다. Foundry는 현재 버전을 사용하세요. 이 Mac의 2024년 구버전은 컨트랙트 생성 단계에서 StackUnderflow를 일으켰고, 공식 v1.9.0으로 교차 확인한 15개 테스트는 통과했습니다. Solidity 0.8.24, Paris EVM 타깃으로 컴파일했습니다.
+로컬 구버전 Foundry 대신 공식 v1.9.0과 Solidity 0.8.24로 컨트랙트 테스트 15개를 검증했습니다. 실제 통합 검증은 테스트 사용자 s5를 지급 대상으로 사용하며 이미 지급됐다면 다시 송금하지 않습니다. 브라우저 QA와 실제 거래 증거는 [검증 기록](docs/QA.md)에 있습니다.
 
-`tests/contracts`의 프록시는 delegatecall과 스토리지 초기화를 검증하는 테스트용이며 PCL을 흉내 내지 않습니다. 로컬 테스트 통과가 실제 Maroo/PCL 연동 검증을 대체하지 않습니다.
+## 현재 범위와 제약
 
-## 해커톤 데모
+- 단일 캠페인, 기존 5명의 테스트 참여자를 대상으로 합니다. 배포된 지급 기준은 고정이며 화면에서 사후 변경하지 않습니다.
+- 실제 게시 여부·팔로워/조회수 진위·소셜 계정 소유권을 자동 검증하지 않습니다. 집행자의 판단을 신뢰합니다.
+- 실제 테스트넷 잔액과 거래 상태는 서버 조회 결과이며, 가짜 트랜잭션 해시나 가짜 성공 상태를 생성하지 않습니다.
+- 서명된 거래를 전송 전에 저장해 같은 요청의 중복 송금을 막습니다. 현재 검증 범위는 단일 백엔드 인스턴스입니다. 수평 확장 전에는 집행자 nonce 할당에 DB 잠금이 필요합니다.
+- 기간 만료 후 미지급 승인은 만료됩니다. 예산 예약이 무기한 지급 보장을 뜻하지 않습니다.
+- 데모 집행자 로그인은 테스트 전용입니다. 외부 운영 배포에는 `OROT_DEMO_MODE=false`와 실제 운영자 로그인·접근 통제가 필요합니다.
+- UI는 한국어를 기준으로 검증했습니다. 오롯 전용 신규 번역 행은 영어에서도 한국어를 폴백으로 사용하며 영문 번역은 하지 않았습니다.
 
-1. 서윤: 세 조건 충족 → 원본 확인 체크 → 승인 → 데모 지급.
-2. 지우: `#광고` 누락 → 체크해도 승인 불가 → 반려 사유 작성.
-3. 민서: 인게이지 미달 → 승인 불가.
-4. 도현: 기간 밖 게시 → 승인 불가.
-5. 기준 변경: 미지급 승인 초기화, 기존 지급액·지급 내역 유지.
-
-발표의 핵심은 ‘사람이 증빙을 판단하고, 승인된 보상을 정해진 기간과 금액으로 집행한다’입니다. 수상 관점의 남은 약점은 수동 검수 도구와의 차별성이며, 실제 예산 예치·PCL 정책 거절·정상 지급 영수증으로 보완해야 합니다. 세부 배점·수상 가능성은 확인되지 않았습니다.
+실제 거래 관련 정책과 비밀 값의 경계는 [POLICIES.md](POLICIES.md), 추가 환경변수는 [환경변수 안내](docs/environment.md)를 참고하세요.

@@ -1,0 +1,42 @@
+{
+  "name": "orot-affiliate-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "generate-api": "node ../scripts/generate-api.js --target web",
+    "dev": "next dev --turbopack -p 3005",
+    "build": "next build",
+    "start": "next start -p 3005",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "check": "pnpm lint && pnpm typecheck && pnpm build"
+  },
+  "dependencies": {
+    "@t3-oss/env-nextjs": "0.13.11",
+    "@tanstack/react-query": "5.101.4",
+    "@tanstack/react-query-devtools": "5.101.4",
+    "firebase": "12.16.0",
+    "i18next": "25.7.2",
+    "next": "16.2.12",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-i18next": "16.4.1",
+    "zod": "4.3.5",
+    "zustand": "5.0.14",
+    "@full-template/client-backup": "file:../packages/client-backup"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.18",
+    "@types/node": "24.10.0",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "eslint": "9.39.2",
+    "eslint-config-next": "16.2.12",
+    "prettier": "3.8.1",
+    "tailwindcss": "4.1.18",
+    "typescript": "5.9.3"
+  },
+  "ct3aMetadata": {
+    "initVersion": "7.38.1"
+  }
+}

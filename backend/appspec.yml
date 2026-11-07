@@ -1,0 +1,35 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/orot-affiliate/backend
+    overwrite: true
+
+# .env 파일은 덮어쓰지 않도록 제외
+file_exists_behavior: OVERWRITE
+
+permissions:
+  - object: /home/ubuntu/orot-affiliate
+    owner: ubuntu
+    group: ubuntu
+
+hooks:
+  ApplicationStop:
+    - location: codepipeline/stop_application.sh
+      timeout: 120
+      runas: ubuntu
+
+  AfterInstall:
+    - location: codepipeline/install_dependencies.sh
+      timeout: 300
+      runas: ubuntu
+
+  ApplicationStart:
+    - location: codepipeline/start_application.sh
+      timeout: 300
+      runas: ubuntu
+
+  ValidateService:
+    - location: codepipeline/validate_service.sh
+      timeout: 180
+      runas: ubuntu

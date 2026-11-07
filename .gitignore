@@ -6,3 +6,17 @@ out/
 cache/
 artifacts/
 .worktrees/
+
+.next/
+dist/
+*.tsbuildinfo
+backend/.secrets/
+backend/certificate/
+web/.env.local
+
+backend/.data/
+
+.playwright-mcp/
+/workhistory/**/*.png
+
+.vercel/
