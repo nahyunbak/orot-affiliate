@@ -25,6 +25,9 @@ async function request<T>(path: string, body?: unknown): Promise<T> {
         signal: AbortSignal.timeout(65000),
       });
   }
+  if (!response.headers.get("content-type")?.includes("application/json")) {
+    throw new Error(t("orot.copy001"));
+  }
   const result = await response.json();
   if (!response.ok || result.success !== true)
     throw new Error(
