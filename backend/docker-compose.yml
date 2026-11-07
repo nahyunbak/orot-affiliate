@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: postgres:18
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-template}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a local database password}
+      POSTGRES_DB: ${POSTGRES_DB:-template}
+    volumes:
+      - template_postgres_data:/var/lib/postgresql
+volumes:
+  template_postgres_data:

@@ -1,0 +1,53 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+  pre_build:
+    commands:
+      - echo Installing pnpm and dependencies...
+      - npm install -g pnpm@10.13.1
+      - pnpm --version
+      - echo Setting NODE_OPTIONS for increased memory...
+      - export NODE_OPTIONS="--max_old_space_size=4096"
+
+  build:
+    commands:
+      - |
+        cd backend
+        echo Cleaning build cache...
+        rm -rf node_modules/.cache
+        rm -rf dist tsconfig.tsbuildinfo
+        echo Installing project dependencies...
+        export NODE_OPTIONS="--max_old_space_size=4096"
+        pnpm install
+        echo Generating Prisma types...
+        pnpm prisma generate
+        echo Building orot-affiliate-backend...
+        NODE_OPTIONS="--max_old_space_size=4096" pnpm build
+
+  post_build:
+    commands:
+      - echo Build completed
+      - echo "Current directory:" && pwd
+      - ls -la
+      - ls -la dist/ || echo "dist not found"
+      - echo "=== Verifying appspec.yml exists ==="
+      - ls -la appspec.yml || echo "appspec.yml not found in backend root"
+
+artifacts:
+  files:
+    - "dist/**/*"
+    - "codepipeline/**/*"
+    - "appspec.yml"
+    - "package.json"
+    - "pnpm-lock.yaml"
+    - "prisma/**/*"
+  name: orot-affiliate-backend-build
+  base-directory: backend
+  discard-paths: no
+
+cache:
+  paths:
+    - 'backend/node_modules/**/*'

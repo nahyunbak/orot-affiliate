@@ -1,0 +1,986 @@
+[
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "reason",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "ABISetupFailed"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "reason",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "AbiDecodeFailed"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "listId",
+        "internalType": "uint64",
+        "type": "uint64"
+      }
+    ],
+    "name": "AddressListDisabled"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "listId",
+        "internalType": "uint64",
+        "type": "uint64"
+      }
+    ],
+    "name": "AddressListNotFound"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "listId",
+        "internalType": "uint64",
+        "type": "uint64"
+      }
+    ],
+    "name": "AddressListStorageError"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "AgentKeeperRequired"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "reason",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "AgentTransferLimitMetadataInvalid"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "childReverts",
+        "internalType": "bytes[]",
+        "type": "bytes[]"
+      }
+    ],
+    "name": "AnyOfRejected"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "field",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "CannotEmpty"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "expected",
+        "internalType": "uint256",
+        "type": "uint256"
+      },
+      {
+        "name": "actual",
+        "internalType": "uint256",
+        "type": "uint256"
+      }
+    ],
+    "name": "ChainIdMismatch"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "ChildSelectorNotEmpty"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "contractAddress",
+        "internalType": "address",
+        "type": "address"
+      }
+    ],
+    "name": "ContractPolicyNotRegistered"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "templateId",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "DuplicatedPolicyTemplate"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "sender",
+        "internalType": "address",
+        "type": "address"
+      }
+    ],
+    "name": "EasAttestationExpired"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "sender",
+        "internalType": "address",
+        "type": "address"
+      }
+    ],
+    "name": "EasAttestationLookupFailed"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "sender",
+        "internalType": "address",
+        "type": "address"
+      }
+    ],
+    "name": "EasAttestationRequired"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "sender",
+        "internalType": "address",
+        "type": "address"
+      }
+    ],
+    "name": "EasAttestationRevoked"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "sender",
+        "internalType": "address",
+        "type": "address"
+      }
+    ],
+    "name": "EasNoAttestationReceived"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "eventKind",
+        "internalType": "string",
+        "type": "string"
+      },
+      {
+        "name": "reason",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "EventEmitFailed"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "maxLimit",
+        "internalType": "uint256",
+        "type": "uint256"
+      },
+      {
+        "name": "value",
+        "internalType": "uint256",
+        "type": "uint256"
+      }
+    ],
+    "name": "ExceededAgentTransferLimit"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "maxLimit",
+        "internalType": "uint256",
+        "type": "uint256"
+      },
+      {
+        "name": "value",
+        "internalType": "uint256",
+        "type": "uint256"
+      },
+      {
+        "name": "resetAt",
+        "internalType": "uint256",
+        "type": "uint256"
+      }
+    ],
+    "name": "ExceededPeriodicVolume"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "FeeCapTooHigh"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "FloorDataGasTooLow"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "ForEachChildAbsent"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "ForEachSubjectUnspecified"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "GasLimitExceeded"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "GasPriceTooLow"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "listId",
+        "internalType": "uint64",
+        "type": "uint64"
+      },
+      {
+        "name": "account",
+        "internalType": "address",
+        "type": "address"
+      }
+    ],
+    "name": "InAddressList"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "InsufficientFee"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "InternalError"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "IntrinsicGasTooLow"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "bad",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "InvalidAddress"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "listId",
+        "internalType": "uint64",
+        "type": "uint64"
+      }
+    ],
+    "name": "InvalidAddressListConfig"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "amount",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "InvalidAmount"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "InvalidCall"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "height",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "InvalidHeight"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "expected",
+        "internalType": "uint256",
+        "type": "uint256"
+      },
+      {
+        "name": "got",
+        "internalType": "uint256",
+        "type": "uint256"
+      }
+    ],
+    "name": "InvalidNumberOfArgs"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "method",
+        "internalType": "string",
+        "type": "string"
+      },
+      {
+        "name": "index",
+        "internalType": "uint256",
+        "type": "uint256"
+      },
+      {
+        "name": "value",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "InvalidPageRequest"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "input",
+        "internalType": "bytes",
+        "type": "bytes"
+      }
+    ],
+    "name": "InvalidParameter"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "input",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "InvalidPolicyTemplate"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "pubkey",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "InvalidPubkey"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "got",
+        "internalType": "uint256",
+        "type": "uint256"
+      },
+      {
+        "name": "expected",
+        "internalType": "uint256",
+        "type": "uint256"
+      }
+    ],
+    "name": "InvalidPubkeySize"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "input",
+        "internalType": "bytes",
+        "type": "bytes"
+      }
+    ],
+    "name": "InvalidSelector"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "InvalidSender"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "got",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "InvalidStructType"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "index",
+        "internalType": "uint256",
+        "type": "uint256"
+      }
+    ],
+    "name": "LogicalPolicyChildNil"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "LogicalPolicyChildrenEmpty"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "maxDepth",
+        "internalType": "uint8",
+        "type": "uint8"
+      }
+    ],
+    "name": "MaxDepthExceeded"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "msgMethod",
+        "internalType": "string",
+        "type": "string"
+      },
+      {
+        "name": "reason",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "MsgServerFailed"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "NonceGap"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "NonceTooLow"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "listId",
+        "internalType": "uint64",
+        "type": "uint64"
+      },
+      {
+        "name": "account",
+        "internalType": "address",
+        "type": "address"
+      }
+    ],
+    "name": "NotInAddressList"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "contractAddress",
+        "internalType": "address",
+        "type": "address"
+      }
+    ],
+    "name": "PclProxyNotRegistered"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "contractAddress",
+        "internalType": "address",
+        "type": "address"
+      }
+    ],
+    "name": "PolicyAlreadyRegistered"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "templateId",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "PolicyNotRegistered"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "PolicyTemplateInUse"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "templateId",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "PolicyTemplateNotFound"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "QuantifierUnspecified"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "queryMethod",
+        "internalType": "string",
+        "type": "string"
+      },
+      {
+        "name": "reason",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "QueryFailed"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "msgSender",
+        "internalType": "address",
+        "type": "address"
+      },
+      {
+        "name": "requester",
+        "internalType": "address",
+        "type": "address"
+      }
+    ],
+    "name": "RequesterIsNotMsgSender"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "SDKInsufficientFunds"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "SDKInvalidAddress"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "SDKInvalidCoins"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "SDKInvalidRequest"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "SDKInvalidType"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "SDKNotFound"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "SDKUnauthorized"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "TipAboveFeeCap"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "TipTooHigh"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "Unauthorized"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "subject",
+        "internalType": "uint8",
+        "type": "uint8"
+      }
+    ],
+    "name": "UnknownForEachSubject"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "methodName",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "UnknownMethod"
+  },
+  {
+    "type": "error",
+    "inputs": [],
+    "name": "UnknownPolicyConfigType"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "templateId",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "UnknownPolicyType"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "codespace",
+        "internalType": "string",
+        "type": "string"
+      },
+      {
+        "name": "code",
+        "internalType": "uint32",
+        "type": "uint32"
+      }
+    ],
+    "name": "UnmappedCosmosError"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "maxLimit",
+        "internalType": "uint256",
+        "type": "uint256"
+      },
+      {
+        "name": "value",
+        "internalType": "uint256",
+        "type": "uint256"
+      }
+    ],
+    "name": "VolumeAboveMaxLimit"
+  },
+  {
+    "type": "error",
+    "inputs": [
+      {
+        "name": "minLimit",
+        "internalType": "uint256",
+        "type": "uint256"
+      },
+      {
+        "name": "value",
+        "internalType": "uint256",
+        "type": "uint256"
+      }
+    ],
+    "name": "VolumeBelowMinLimit"
+  },
+  {
+    "type": "event",
+    "anonymous": false,
+    "inputs": [
+      {
+        "name": "proxy",
+        "internalType": "address",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "deployer",
+        "internalType": "address",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "kind",
+        "internalType": "enum PclProxyKind",
+        "type": "uint8",
+        "indexed": false
+      }
+    ],
+    "name": "PclProxyDeployed"
+  },
+  {
+    "type": "function",
+    "inputs": [
+      {
+        "name": "policy",
+        "internalType": "struct ContractPolicyConfig",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "_contract",
+            "internalType": "address",
+            "type": "address"
+          },
+          {
+            "name": "admin",
+            "internalType": "address",
+            "type": "address"
+          },
+          {
+            "name": "policies",
+            "internalType": "struct PolicySet[]",
+            "type": "tuple[]",
+            "components": [
+              {
+                "name": "templateId",
+                "internalType": "string",
+                "type": "string"
+              },
+              {
+                "name": "policy",
+                "internalType": "bytes",
+                "type": "bytes"
+              },
+              {
+                "name": "selector",
+                "internalType": "bytes",
+                "type": "bytes"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "name": "changeContractPolicies",
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "inputs": [
+      {
+        "name": "contractAddress",
+        "internalType": "address",
+        "type": "address"
+      }
+    ],
+    "name": "contractPolicies",
+    "outputs": [
+      {
+        "name": "",
+        "internalType": "struct ContractPolicyConfig",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "_contract",
+            "internalType": "address",
+            "type": "address"
+          },
+          {
+            "name": "admin",
+            "internalType": "address",
+            "type": "address"
+          },
+          {
+            "name": "policies",
+            "internalType": "struct PolicySet[]",
+            "type": "tuple[]",
+            "components": [
+              {
+                "name": "templateId",
+                "internalType": "string",
+                "type": "string"
+              },
+              {
+                "name": "policy",
+                "internalType": "bytes",
+                "type": "bytes"
+              },
+              {
+                "name": "selector",
+                "internalType": "bytes",
+                "type": "bytes"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "inputs": [
+      {
+        "name": "kind",
+        "internalType": "enum PclProxyKind",
+        "type": "uint8"
+      },
+      {
+        "name": "value",
+        "internalType": "uint256",
+        "type": "uint256"
+      },
+      {
+        "name": "initData",
+        "internalType": "bytes",
+        "type": "bytes"
+      }
+    ],
+    "name": "deployPclProxy",
+    "outputs": [
+      {
+        "name": "proxy",
+        "internalType": "address",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "inputs": [
+      {
+        "name": "proxy",
+        "internalType": "address",
+        "type": "address"
+      }
+    ],
+    "name": "pclProxy",
+    "outputs": [
+      {
+        "name": "",
+        "internalType": "struct PclProxyEntry",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "kind",
+            "internalType": "enum PclProxyKind",
+            "type": "uint8"
+          },
+          {
+            "name": "admin",
+            "internalType": "address",
+            "type": "address"
+          },
+          {
+            "name": "proxy",
+            "internalType": "address",
+            "type": "address"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "inputs": [
+      {
+        "name": "templateId",
+        "internalType": "string",
+        "type": "string"
+      }
+    ],
+    "name": "policyTemplate",
+    "outputs": [
+      {
+        "name": "",
+        "internalType": "struct PolicyTemplate",
+        "type": "tuple",
+        "components": [
+          {
+            "name": "templateId",
+            "internalType": "string",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "internalType": "string",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "internalType": "string",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  }
+]

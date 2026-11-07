@@ -1,0 +1,273 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  engineType    = "binary"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum LanguageEnum {
+  ko // 한국어 (Korean)
+  en // 영어 (English)
+  ja // 일본어 (Japanese)
+  zh // 중국어 간체 (Simplified Chinese)
+  es // 스페인어 (Spanish)
+  de // 독일어 (German)
+  fr // 프랑스어 (French)
+  pt // 포르투갈어 (Portuguese)
+  ru // 러시아어 (Russian)
+  zh_Hant // 중국어 번체 (Traditional Chinese)
+  it // 이탈리아어 (Italian)
+  ar // 아랍어 (Arabic)
+  id // 인도네시아어 (Indonesian)
+  tr // 터키어 (Turkish)
+  vi // 베트남어 (Vietnamese)
+  th // 태국어 (Thai)
+  hi // 힌디어 (Hindi)
+  nl // 네덜란드어 (Dutch)
+  pl // 폴란드어 (Polish)
+  sv // 스웨덴어 (Swedish)
+}
+
+enum UserRole {
+  Normal
+  Admin
+}
+
+enum ProviderTypeEnum {
+  local
+  google
+  facebook
+  apple
+  anonymous
+}
+
+enum PlatformEnum {
+  IOS
+  ANDROID
+  WEB
+}
+
+enum PurchaseStatusEnum {
+  NONE // [Apple/Google] 초기 상태 (구매 전)
+  ACTIVE // [Apple/Google] 활성 구독
+  GRACE_PERIOD // [Apple/Google] 결제 실패 후 유예 기간
+  ACCOUNT_HOLD // [Google 전용] Grace Period 이후 권한 회수 상태
+  PAUSED // [Google 전용] 사용자 일시정지
+  EXPIRED // [Apple/Google] 구독 만료
+  REFUNDED // [Apple/Google] 환불됨
+  CANCELLED // [Apple/Google] 취소됨 (자동 갱신 OFF 후 만료)
+}
+
+enum SubscriptionTypeEnum {
+  MONTHLY
+  YEARLY
+}
+
+enum PaymentPlatformEnum {
+  GOOGLE_PLAY
+  APPLE_APP_STORE
+}
+
+enum DeviceEnum {
+  ios
+  android
+}
+
+model User {
+  id               Int              @id @default(autoincrement())
+  paymentUUID      String           @unique @default(uuid())
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  email            String           @unique
+  nickName         String
+  referral_code    String           @unique
+  profile_image    String?
+  auth_provider    ProviderTypeEnum
+  refreshToken     String?
+  role             UserRole         @default(Normal)
+  isDeleted        Boolean          @default(false)
+  whenDeleted      DateTime?
+  googleId         String?
+  facebookId       String?
+  appleId          String?
+  initialPlatform  PlatformEnum     @default(ANDROID)
+  alarmAllowed     Boolean          @default(true)
+  timezone         String           @default("UTC")
+  language         LanguageEnum     @default(en)
+  fcmTokens        FcmToken[]
+  payments         Payment[]
+  paymentHistories PaymentHistory[]
+  testWallet       TestWallet?
+}
+
+model TestWallet {
+  id           String @id
+  userId       Int @unique
+  user         User @relation(fields: [userId], references: [id])
+  address      String @unique
+  encryptedKey String @db.Text
+  role         String
+  createdAt    DateTime @default(now())
+  participants CampaignParticipant[]
+}
+
+model AffiliateCampaign {
+  id              String @id
+  settings        Json
+  contractAddress String?
+  deploymentTx    String?
+  policyTx        String?
+  fundingTx       String?
+  createdAt       DateTime @default(now())
+  participants    CampaignParticipant[]
+}
+
+model CampaignParticipant {
+  id           String @id
+  campaignId   String
+  campaign     AffiliateCampaign @relation(fields: [campaignId], references: [id])
+  walletId     String
+  wallet       TestWallet @relation(fields: [walletId], references: [id])
+  evidence     Json
+  status       String @default("pending")
+  reason       String?
+  approvalTx   String?
+  payoutTx     String?
+  paidAmount   Int?
+  paidAt       DateTime?
+  updatedAt    DateTime @updatedAt
+  @@unique([campaignId, walletId])
+}
+
+model ChainOperation {
+  id           String @id @default(cuid())
+  operationKey String @unique
+  txHash       String @unique
+  signedTx     String @db.Text
+  status       String @default("pending")
+  createdAt    DateTime @default(now())
+}
+
+model FcmToken {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  fcmToken     String     @unique
+  deviceType   DeviceEnum
+  deviceModel  String
+  osVersion    String
+  appVersion   String
+  isActive     Boolean    @default(true)
+  lastActiveAt DateTime   @default(now())
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 구독 정보
+  platform PaymentPlatformEnum
+  status   PurchaseStatusEnum  @default(NONE)
+
+  // 영수증 정보
+  transactionId         String  @unique // Google: orderId, Apple: transactionId (가장 최근 갱신된 트랜잭션 ID)
+  originalTransactionId String  @unique // 구독 그룹을 식별하는 불변의 ID (Apple: original_transaction_id, Google: orderId의 초기값)
+  productId             String // 상품 ID
+  purchaseToken         String? @unique // Google 전용
+  promotionCode         String? // Google Play vanity promo code 전용 (one-time code는 코드 문자열 미제공)
+  receipt               String  @db.Text // 영수증 원본 데이터 (검증용)
+
+  // 구독 기간
+  purchaseDate DateTime // 최근 결제일 (가장 마지막 갱신일)
+  expiryDate   DateTime // 현재 구독 만료일
+
+  // 무료 체험
+  isTrialPeriod Boolean   @default(false)
+  trialEndDate  DateTime?
+
+  // 환불 정보
+  refundDate   DateTime?
+  refundReason String?
+
+  // 자동 갱신 상태 (DID_CHANGE_RENEWAL_STATUS 처리용)
+  autoRenewStatus    Boolean   @default(true)
+  autoRenewChangedAt DateTime?
+
+  // Grace Period 만료일 (DID_FAIL_TO_RENEW 처리용)
+  gracePeriodExpiryDate DateTime?
+
+  // 일시정지 재개일 [Google 전용] (SUBSCRIPTION_PAUSED 처리용)
+  resumeDate DateTime?
+
+  // 사용자 관계 (webhook 경우 userId 없을 수 있음)
+  user   User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId Int?
+
+  // 히스토리 관계 - 이 구독 건에 대한 모든 결제/갱신 이력
+  histories PaymentHistory[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([expiryDate])
+}
+
+model PaymentHistory {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  // 어떤 Payment(구독)에 대한 기록인가
+  paymentId Int
+  payment   Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  // 유저 정보 (조인 비용 절감을 위해 포함)
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // 플랫폼 정보 (분석 편의성을 위해 스냅샷 저장)
+  platform PaymentPlatformEnum
+
+  // 이벤트 타입 (RENEWAL, INITIAL_PURCHASE, REFUND, GRACE_PERIOD, EXPIRED, AUTO_RENEW_CHANGED 등)
+  eventType String
+
+  // 결제 정보 스냅샷
+  transactionId String // 해당 시점의 고유 거래 ID
+  productId     String
+  status        PurchaseStatusEnum
+  promotionCode String?
+
+  purchaseDate DateTime
+  expiryDate   DateTime
+
+  // 가격 정보 (옵션: 추후 매출 정산용)
+  price    Float?
+  currency String?
+
+  // 자동 갱신 상태 스냅샷
+  autoRenewStatus Boolean @default(true)
+
+  // Grace Period 정보
+  gracePeriodExpiryDate DateTime?
+
+  // 환불 정보
+  refundDate   DateTime?
+  refundReason String?
+
+  // 영수증 원본 (검증 및 CS용) - 필요한 부분만 JSON으로 저장
+  receiptData String? @db.Text
+
+  @@index([paymentId])
+  @@index([userId])
+  @@index([transactionId])
+  @@index([createdAt])
+  @@index([platform, eventType]) // 플랫폼별 이벤트 통계용 인덱스
+  @@index([eventType])
+}

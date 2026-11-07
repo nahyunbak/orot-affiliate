@@ -1,0 +1,11 @@
+/backend/
+/contracts/
+/tests/
+/artifacts/
+/workhistory/
+.env*
+**/.env*
+**/node_modules
+**/.secrets
+**/.data
+/.playwright-mcp/
