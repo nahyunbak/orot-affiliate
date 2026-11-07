@@ -1,0 +1,11 @@
+{
+  "name": "orot-affiliate-settlement",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/server.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "lint": "node scripts/check.mjs",
+    "test:contracts": "forge test -vv"
+  }
+}
