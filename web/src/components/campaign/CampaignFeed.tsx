@@ -437,9 +437,14 @@ export function CampaignFeed() {
             <aside className="review-sidebar [position:sticky] [top:25px] [min-width:0] [padding-top:5px] max-[1050px]:[display:none]">
               <section className="campaign-card [background:var(--color-feed-tone-67)] [border:1px_solid_var(--color-feed-tone-1)] [border-radius:10px] [padding:18px]">
                 <div className="card-heading [display:flex] [gap:10px] [align-items:center] [&_>_div]:[flex:1] [&_strong]:[font-size:var(--text-feed-12)] [&_strong]:[display:block] [&_>_div_>_span]:[display:block] [&_>_div_>_span]:[font-size:var(--text-feed-9)] [&_>_div_>_span]:[color:var(--color-feed-tone-70)] [&_>_div_>_span]:[margin-top:3px]">
-                  <span className="campaign-monogram [display:grid] [place-items:center] [flex-shrink:0] [width:38px] [height:38px] [background:var(--color-feed-tone-68)] [border-radius:9px] [font-family:Georgia,_serif] [font-size:var(--text-feed-23)] [color:var(--color-feed-tone-69)]">
-                    D.
-                  </span>
+                  <Image
+                    src="/images/maroo/logo.png"
+                    alt="Maroo"
+                    width={38}
+                    height={38}
+                    className="shrink-0"
+                    unoptimized
+                  />
                   <div>
                     <strong>{t("orot.copy017")}</strong>
                     <span>{t("orot.copy051")}</span>
